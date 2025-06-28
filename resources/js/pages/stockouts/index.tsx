@@ -171,15 +171,20 @@ export default function Index({ stockouts }: { stockouts: PaginatedData<StockOut
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {selectedStockOut.details.map((detail, index) => (
-                                            <tr key={index} className={index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-gray-50 dark:bg-zinc-800'}>
-                                                <td className="px-4 py-2">{formatDateToHumanReadable(detail.batch.entry_date)}</td>
-                                                <td className="px-4 py-2">{detail.batch.quantity}</td>
-                                                <td className="px-4 py-2">{formatDateToHumanReadable(selectedStockOut.out_date)}</td>
-                                                <td className="px-4 py-2">{detail.quantity_used}</td>
-                                                <td className="px-4 py-2">{detail.batch.remaining_qty}</td>
-                                            </tr>
-                                        ))}
+                                        {[...selectedStockOut.details]
+                                            .sort((a, b) => new Date(b.batch.entry_date).getTime() - new Date(a.batch.entry_date).getTime())
+                                            .map((detail, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className={index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-gray-50 dark:bg-zinc-800'}
+                                                >
+                                                    <td className="px-4 py-2">{formatDateToHumanReadable(detail.batch.entry_date)}</td>
+                                                    <td className="px-4 py-2">{detail.batch.quantity}</td>
+                                                    <td className="px-4 py-2">{formatDateToHumanReadable(selectedStockOut.out_date)}</td>
+                                                    <td className="px-4 py-2">{detail.quantity_used}</td>
+                                                    <td className="px-4 py-2">{detail.batch.remaining_qty}</td>
+                                                </tr>
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>

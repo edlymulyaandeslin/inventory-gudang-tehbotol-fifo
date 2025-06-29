@@ -5,6 +5,9 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+    optimizeDeps: {
+        include: ['chart.js', 'react-chartjs-2'],
+    },
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],

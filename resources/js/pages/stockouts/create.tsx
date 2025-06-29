@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Barang Keluar', href: '/stockouts' },
@@ -15,6 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Create({ products }: { products: Product[] }) {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [maxQty, setMaxQty] = useState<number>(0);
     const { data, setData, post, processing, errors } = useForm({
         product_id: '',
         quantity: '',
@@ -24,6 +26,9 @@ export default function Create({ products }: { products: Product[] }) {
     const onChangeProduct = (value: string) => {
         const product = products.find((product) => String(product.id) === value);
         if (product) {
+            const totalQty = product.batches.reduce((total, batch) => total + batch.remaining_qty, 0);
+            setMaxQty(totalQty);
+
             setData('product_id', value);
             setSelectedProduct(product);
         }
@@ -36,6 +41,11 @@ export default function Create({ products }: { products: Product[] }) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (maxQty <= parseInt(data.quantity)) {
+            toast.warning(`Jumlah kuantitas yang tersedia ${maxQty}`);
+            return;
+        }
+
         post(route('stockouts.store'));
     };
 
@@ -72,7 +82,11 @@ export default function Create({ products }: { products: Product[] }) {
                     <div>
                         <Label htmlFor="quantity">Jumlah</Label>
                         <Input id="quantity" value={data.quantity} onChange={onChangeQty} placeholder="0" />
-                        {selectedProduct && <span className="text-xs font-bold text-gray-400">Satuan: {selectedProduct.unit}</span>}
+                        {selectedProduct && (
+                            <span className="text-xs font-bold text-gray-400">
+                                Tersedia: {maxQty} {selectedProduct.unit}
+                            </span>
+                        )}
                         {errors.quantity && <p className="mt-1 text-sm text-red-500">{errors.quantity}</p>}
                     </div>
                     {/* Kuantitas */}

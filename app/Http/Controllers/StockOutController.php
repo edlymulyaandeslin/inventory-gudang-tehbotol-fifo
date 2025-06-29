@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\StockOut;
 use Illuminate\Http\Request;
 use App\Models\StockOutDetail;
+use Illuminate\Support\Facades\DB;
 
 class StockOutController extends Controller
 {
@@ -37,7 +38,7 @@ class StockOutController extends Controller
      */
     public function create()
     {
-        $products = Product::latest()->get();
+        $products = Product::with("batches")->latest()->get();
         return Inertia::render("stockouts/create", [
             "products" => $products
         ]);
@@ -54,38 +55,50 @@ class StockOutController extends Controller
             "out_date" => "required|date",
         ]);
 
-        $batchs = Batch::where('product_id', $data_input['product_id'])
-            ->where('remaining_qty', '>', 0)
-            ->orderBy('entry_date', 'asc')
-            ->get();
+        DB::beginTransaction();
+        try {
+            $batchs = Batch::where('product_id', $data_input['product_id'])
+                ->where('remaining_qty', '>', 0)
+                ->orderBy('entry_date', 'asc')
+                ->get();
 
-        $totalToTake = $data_input['quantity'];
+            $totalToTake = $data_input['quantity'];
 
-        $stockOut = StockOut::create([
-            'product_id' => 1,
-            'quantity' => $totalToTake,
-            'out_date' => now(),
-        ]);
-
-        foreach ($batchs as $batch) {
-            if ($totalToTake <= 0) break;
-
-            $take = min($batch->remaining_qty, $totalToTake);
-
-            // Update batch
-            $batch->decrement('remaining_qty', $take);
-
-            // Simpan detail
-            StockOutDetail::create([
-                'stock_out_id' => $stockOut->id,
-                'batch_id' => $batch->id,
-                'quantity_used' => $take,
+            $stockOut = StockOut::create([
+                'product_id' => $data_input['product_id'],
+                'quantity' => $totalToTake,
+                'out_date' => now(),
             ]);
 
-            $totalToTake -= $take;
-        }
+            foreach ($batchs as $batch) {
+                if ($totalToTake <= 0) break;
 
-        return redirect()->route("stockouts.index")->with("success", "Data barang keluar berhasil ditambahkan.");
+                $take = min($batch->remaining_qty, $totalToTake);
+
+                $available_qty = $batch->remaining_qty;
+
+                // Update batch
+                $batch->decrement('remaining_qty', $take);
+
+                // Simpan detail
+                StockOutDetail::create([
+                    'stock_out_id' => $stockOut->id,
+                    'available_qty' => $available_qty,
+                    'batch_id' => $batch->id,
+                    'quantity_used' => $take,
+                    'qty_after_stockout' => $batch->remaining_qty,
+                ]);
+
+                $totalToTake -= $take;
+            }
+
+            DB::commit();
+
+            return redirect()->route("stockouts.index")->with("success", "Data barang keluar berhasil ditambahkan.");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -101,7 +114,7 @@ class StockOutController extends Controller
      */
     public function edit(StockOut $stockout)
     {
-        $products = Product::latest()->get();
+        $products = Product::with("batches")->latest()->get();
         $stockout->load('product');
         return Inertia::render('stockouts/edit', [
             'stockout' => $stockout,

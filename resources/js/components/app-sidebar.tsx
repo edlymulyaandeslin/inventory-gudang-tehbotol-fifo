@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { ArrowDownToLine, ArrowUpFromLine, LayoutGrid, ShoppingBasket, Users } from 'lucide-react';
+import { ArrowDownToLine, ArrowUpFromLine, LayoutGrid, PackageOpen, ShoppingBasket, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: { label: string; items: NavItem[] }[] = [
@@ -35,6 +35,11 @@ const mainNavItems: { label: string; items: NavItem[] }[] = [
                 title: 'Barang Keluar',
                 href: '/stockouts',
                 icon: ArrowUpFromLine,
+            },
+            {
+                title: 'Inventory',
+                href: '/inventories',
+                icon: PackageOpen,
             },
         ],
     },

@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('stock_out_id')->constrained()->onDelete('cascade');
             $table->foreignId('batch_id')->constrained()->onDelete('cascade');
+            $table->integer('available_qty')->default(0);
             $table->integer('quantity_used');
+            $table->integer('qty_after_stockout')->default(0);
             $table->timestamps();
         });
     }

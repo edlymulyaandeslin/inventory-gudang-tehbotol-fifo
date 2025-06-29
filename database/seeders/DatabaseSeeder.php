@@ -22,8 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProductSeeder::class,
             BatchSeeder::class,
-            StockOutSeeder::class,
-            StockOutDetailSeeder::class,
         ]);
     }
 }

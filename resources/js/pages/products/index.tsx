@@ -91,13 +91,6 @@ export default function Index({ products }: { products: PaginatedData<Product> }
                             render: (product) => <span className="text-sm font-medium capitalize">{product.name}</span>,
                         },
                         {
-                            title: 'Stok Tersedia',
-                            render: (product) => {
-                                const totalStock = product.batches.reduce((sum, batch) => sum + batch.remaining_qty, 0);
-                                return <span className="text-sm font-medium">{totalStock}</span>;
-                            },
-                        },
-                        {
                             title: 'Satuan Unit',
                             render: (product) => <span className="text-sm font-medium">{product.unit}</span>,
                         },

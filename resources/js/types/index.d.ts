@@ -79,7 +79,9 @@ export interface StockOutDetail {
     id: number;
     stock_out_id: number;
     batch_id: number;
-    quantity_used: string;
+    available_qty: number;
+    quantity_used: number;
+    qty_after_stockout: number;
     stock_out: StockOut;
     batch: Batch;
     created_at: string;

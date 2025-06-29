@@ -164,7 +164,7 @@ export default function Index({ stockouts }: { stockouts: PaginatedData<StockOut
                                     <thead className="bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-gray-300">
                                         <tr>
                                             <th className="px-4 py-2 font-medium">Tanggal Masuk</th>
-                                            <th className="px-4 py-2 font-medium">Jumlah Masuk</th>
+                                            <th className="px-4 py-2 font-medium">Jumlah Tersedia</th>
                                             <th className="px-4 py-2 font-medium">Tanggal Keluar</th>
                                             <th className="px-4 py-2 font-medium">Jumlah Keluar</th>
                                             <th className="px-4 py-2 font-medium">Sisa</th>
@@ -179,10 +179,10 @@ export default function Index({ stockouts }: { stockouts: PaginatedData<StockOut
                                                     className={index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-gray-50 dark:bg-zinc-800'}
                                                 >
                                                     <td className="px-4 py-2">{formatDateToHumanReadable(detail.batch.entry_date)}</td>
-                                                    <td className="px-4 py-2">{detail.batch.quantity}</td>
+                                                    <td className="px-4 py-2">{detail.available_qty}</td>
                                                     <td className="px-4 py-2">{formatDateToHumanReadable(selectedStockOut.out_date)}</td>
                                                     <td className="px-4 py-2">{detail.quantity_used}</td>
-                                                    <td className="px-4 py-2">{detail.batch.remaining_qty}</td>
+                                                    <td className="px-4 py-2">{detail.qty_after_stockout}</td>
                                                 </tr>
                                             ))}
                                     </tbody>

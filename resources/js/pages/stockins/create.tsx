@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import type { Batch, BreadcrumbItem, Product } from '@/types';
+import type { BreadcrumbItem, Product } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
@@ -9,17 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Barang Masuk', href: '/batchs' },
-    { title: 'Edit', href: '/batchs/edit' },
+    { title: 'Barang Masuk', href: '/stockins' },
+    { title: 'Create', href: '/stockins/create' },
 ];
 
-export default function Edit({ batch, products }: { batch: Batch; products: Product[] }) {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(batch.product);
-    const { data, setData, put, processing, errors } = useForm({
-        product_id: batch.product_id || '',
-        quantity: batch.quantity || '',
-        remaining_qty: batch.remaining_qty || '',
-        entry_date: batch.entry_date || '',
+export default function Create({ products }: { products: Product[] }) {
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const { data, setData, post, processing, errors } = useForm({
+        product_id: '',
+        quantity: '',
+        remaining_qty: '',
+        entry_date: '',
     });
 
     const onChangeProduct = (value: string) => {
@@ -38,16 +38,16 @@ export default function Edit({ batch, products }: { batch: Batch; products: Prod
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('batchs.update', batch.id));
+        post(route('stockins.store'));
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Edit Barang Masuk" />
+            <Head title="Tambah Barang Masuk" />
 
             <section className="w-full px-6 py-10 md:px-12 lg:px-20">
                 <div className="mb-10">
-                    <h1 className="text-4xl font-bold">Edit Barang Masuk</h1>
+                    <h1 className="text-4xl font-bold">Tambah Barang Masuk</h1>
                     <p className="mt-2 text-base text-muted-foreground">Masukkan informasi barang masuk baru pada form berikut.</p>
                 </div>
 
@@ -55,7 +55,7 @@ export default function Edit({ batch, products }: { batch: Batch; products: Prod
                     {/* Produk */}
                     <div>
                         <Label htmlFor="product_id">Unit</Label>
-                        <Select value={String(data.product_id)} onValueChange={(value) => onChangeProduct(value)}>
+                        <Select value={data.product_id} onValueChange={(value) => onChangeProduct(value)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih Produk" />
                             </SelectTrigger>

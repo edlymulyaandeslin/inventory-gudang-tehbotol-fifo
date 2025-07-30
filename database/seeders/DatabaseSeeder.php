@@ -18,10 +18,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'super',
             'email' => 'super@gmail.com',
         ]);
+        User::factory()->create([
+            'name' => 'ripal',
+            'email' => 'admin@gudang.com',
+            'password' => 'password'
+        ]);
 
         $this->call([
             ProductSeeder::class,
-            BatchSeeder::class,
+            StockInSeeder::class,
         ]);
     }
 }

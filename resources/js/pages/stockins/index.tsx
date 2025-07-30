@@ -10,12 +10,12 @@ import { useEffect, useState } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Barang Masuk',
-        href: '/batchs',
+        href: '/stockins',
     },
 ];
 
-export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
-    const { props } = usePage<{ batchs: PaginatedData<Batch>; search?: string }>();
+export default function Index({ stockins }: { stockins: PaginatedData<Batch> }) {
+    const { props } = usePage<{ stockins: PaginatedData<Batch>; search?: string }>();
     const initialSearch = props.search || '';
     const [search, setSearch] = useState(initialSearch);
     const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
@@ -26,7 +26,7 @@ export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
     useEffect(() => {
         if (search !== initialSearch) {
             const delayDebounce = setTimeout(() => {
-                router.get('/batchs', { search }, { preserveState: true, replace: true });
+                router.get('/stockins', { search }, { preserveState: true, replace: true });
             }, 400);
 
             return () => clearTimeout(delayDebounce);
@@ -36,7 +36,7 @@ export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
     const handleDelete = () => {
         if (!selectedBatch) return;
 
-        router.delete(`/batchs/${selectedBatch.id}`, {
+        router.delete(`/stockins/${selectedBatch.id}`, {
             onSuccess: () => {
                 setOpenDeleteModal(false);
                 setSelectedBatch(null);
@@ -56,7 +56,7 @@ export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <h2 className="text-2xl font-bold tracking-tight">Data Barang Masuk</h2>
                     <Link
-                        href="/batchs/create"
+                        href="/stockins/create"
                         className="inline-flex h-9 items-center rounded-md bg-blue-600 px-4 text-sm font-medium text-white shadow transition-colors hover:bg-blue-700"
                     >
                         + Tambah Barang Masuk
@@ -72,11 +72,11 @@ export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
                 />
 
                 <DataTable
-                    data={batchs.data}
-                    from={batchs.from}
-                    to={batchs.to}
-                    total={batchs.total}
-                    links={batchs.links}
+                    data={stockins.data}
+                    from={stockins.from}
+                    to={stockins.to}
+                    total={stockins.total}
+                    links={stockins.links}
                     columns={[
                         {
                             title: '#',
@@ -121,7 +121,7 @@ export default function Index({ batchs }: { batchs: PaginatedData<Batch> }) {
                                         Lihat
                                     </button>
                                     <Link
-                                        href={`/batchs/${batch.id}/edit`}
+                                        href={`/stockins/${batch.id}/edit`}
                                         className="inline-flex items-center rounded-md bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:hover:bg-yellow-800"
                                     >
                                         Edit

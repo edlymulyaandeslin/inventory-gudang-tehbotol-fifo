@@ -28,7 +28,7 @@ const mainNavItems: { label: string; items: NavItem[] }[] = [
             },
             {
                 title: 'Barang Masuk',
-                href: '/batchs',
+                href: '/stockins',
                 icon: ArrowDownToLine,
             },
             {

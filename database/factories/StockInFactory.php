@@ -6,9 +6,9 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Batch>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\StockIn>
  */
-class BatchFactory extends Factory
+class StockInFactory extends Factory
 {
     /**
      * Define the model's default state.

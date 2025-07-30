@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Models\Batch;
+use App\Models\StockIn;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
-class BatchController extends Controller
+class StockInController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Batch::with('product');
+        $query = StockIn::with('product');
 
         if ($search = $request->search) {
             $query->whereHas("product", function ($query) use ($search) {
@@ -23,10 +23,10 @@ class BatchController extends Controller
             });
         }
 
-        $batchs = $query->latest()->paginate(10)->withQueryString();
+        $stockins = $query->latest()->paginate(10)->withQueryString();
 
-        return Inertia::render("batchs/index", [
-            "batchs" => $batchs,
+        return Inertia::render("stockins/index", [
+            "stockins" => $stockins,
             "search" => $request->search
         ]);
     }
@@ -37,7 +37,7 @@ class BatchController extends Controller
     public function create()
     {
         $products = Product::latest()->get();
-        return Inertia::render("batchs/create", [
+        return Inertia::render("stockins/create", [
             "products" => $products
         ]);
     }
@@ -54,15 +54,15 @@ class BatchController extends Controller
             "entry_date" => "required|date",
         ]);
 
-        Batch::create($data_input);
+        StockIn::create($data_input);
 
-        return redirect()->route("batchs.index")->with("success", "Data barang masuk berhasil ditambahkan.");
+        return redirect()->route("stockins.index")->with("success", "Data barang masuk berhasil ditambahkan.");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Batch $batch)
+    public function show(StockIn $stockin)
     {
         //
     }
@@ -70,12 +70,12 @@ class BatchController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Batch $batch)
+    public function edit(StockIn $stockin)
     {
         $products = Product::latest()->get();
-        $batch->load('product');
-        return Inertia::render('batchs/edit', [
-            'batch' => $batch,
+        $stockin->load('product');
+        return Inertia::render('stockins/edit', [
+            'stockin' => $stockin,
             'products' => $products
         ]);
     }
@@ -83,7 +83,7 @@ class BatchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Batch $batch)
+    public function update(Request $request, StockIn $stockin)
     {
         $data_input = $request->validate([
             "product_id" => "required",
@@ -92,18 +92,18 @@ class BatchController extends Controller
             "entry_date" => "required|date",
         ]);
 
-        $batch->update($data_input);
+        $stockin->update($data_input);
 
-        return redirect()->route('batchs.index')->with('success', 'Data barang masuk berhasil diperbarui!');
+        return redirect()->route('stockins.index')->with('success', 'Data barang masuk berhasil diperbarui!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Batch $batch)
+    public function destroy(StockIn $stockin)
     {
-        $batch->delete();
+        $stockin->delete();
 
-        return redirect()->route('batchs.index')->with('success', 'Data barang masuk berhasil dihapus!');
+        return redirect()->route('stockins.index')->with('success', 'Data barang masuk berhasil dihapus!');
     }
 }

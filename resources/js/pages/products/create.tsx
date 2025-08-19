@@ -17,6 +17,7 @@ export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         unit: '',
+        stock: '',
         image: null as File | null,
     });
 
@@ -75,6 +76,13 @@ export default function Create() {
                             </SelectContent>
                         </Select>
                         {errors.unit && <p className="mt-1 text-sm text-red-500">{errors.unit}</p>}
+                    </div>
+
+                    {/* Stock*/}
+                    <div>
+                        <Label htmlFor="stock">Stock Awal</Label>
+                        <Input id="stock" value={data.stock} onChange={(e) => setData('stock', e.target.value)} placeholder="stock" />
+                        {errors.stock && <p className="mt-1 text-sm text-red-500">{errors.stock}</p>}
                     </div>
 
                     {/* Upload Gambar dengan Preview */}

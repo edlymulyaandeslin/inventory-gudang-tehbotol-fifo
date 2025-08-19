@@ -50,6 +50,9 @@ class ProductController extends Controller
 
         $data_input['sku'] = strtoupper(fake()->bothify('TBS-###??'));
 
+        // stock awal
+        $stock = $request->stock;
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
 
@@ -63,7 +66,13 @@ class ProductController extends Controller
             $data_input['image'] = 'products/' . $filename;
         }
 
-        Product::create($data_input);
+        $product = Product::create($data_input);
+
+        $product->batches()->create([
+            'quantity' => $stock,
+            'remaining_qty' => $stock,
+            'entry_date' => now(),
+        ]);
 
         return redirect()->route("products.index")->with("success", "Product berhasil ditambahkan.");
     }
@@ -91,7 +100,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // dd($request->all());
         $validate_data = $request->validate([
             "name" => "required",
             "unit" => "required",

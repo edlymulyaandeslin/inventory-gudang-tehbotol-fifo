@@ -19,6 +19,10 @@ class StockOutDetail extends Model
 
     public function batch()
     {
+<<<<<<< HEAD
         return $this->belongsTo(Batch::class);
+=======
+        return $this->belongsTo(StockIn::class, 'stock_in_id');
+>>>>>>> 9e5cce2 (fix: fix bug in stockoutcontroller)
     }
 }

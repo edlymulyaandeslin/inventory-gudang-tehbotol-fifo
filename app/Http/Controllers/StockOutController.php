@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use App\Models\Batch;
+
+use App\Models\StockIn;
 use App\Models\Product;
 use App\Models\StockOut;
 use Illuminate\Http\Request;
@@ -57,17 +58,23 @@ class StockOutController extends Controller
 
         DB::beginTransaction();
         try {
-            $batchs = Batch::where('product_id', $data_input['product_id'])
+            $batchs = StockIn::where('product_id', $data_input['product_id'])
                 ->where('remaining_qty', '>', 0)
                 ->orderBy('entry_date', 'asc')
                 ->get();
+
+
+            $totalAvailable = $batchs->sum('remaining_qty');
+            if ($data_input['quantity'] > $totalAvailable) {
+                return redirect()->back()->with('error', 'Stok tidak mencukupi. Sisa stok keseluruhan: ' . $totalAvailable);
+            }
 
             $totalToTake = $data_input['quantity'];
 
             $stockOut = StockOut::create([
                 'product_id' => $data_input['product_id'],
                 'quantity' => $totalToTake,
-                'out_date' => now(),
+                'out_date' => $data_input['out_date'],
             ]);
 
             foreach ($batchs as $batch) {
@@ -84,7 +91,7 @@ class StockOutController extends Controller
                 StockOutDetail::create([
                     'stock_out_id' => $stockOut->id,
                     'available_qty' => $available_qty,
-                    'batch_id' => $batch->id,
+                    'stock_in_id' => $batch->id,
                     'quantity_used' => $take,
                     'qty_after_stockout' => $batch->remaining_qty,
                 ]);
